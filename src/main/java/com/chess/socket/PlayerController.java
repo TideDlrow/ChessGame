@@ -1,4 +1,4 @@
-package com.chess.controller;
+package com.chess.socket;
 
 import org.springframework.stereotype.Component;
 

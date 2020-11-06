@@ -1,5 +1,6 @@
 package com.chess.pieces;
 
+import com.chess.bean.Board;
 import lombok.Data;
 
 /**
@@ -17,19 +18,48 @@ public abstract class Piece {
     private byte y;
     /**
      * 所属阵营
+     * false 黑方
+     * true 红方
      */
-    private CampEnum camp;
+    private boolean camp;
     /**
      * 是否死亡
      */
     private boolean dead;
 
+//    private final int WEIGHT;
+
     /**
      * 是否符合行子规则
-     * @param piece 下一步棋子的状态
+     *
+     * @param nextX 下一步的X坐标
+     * @param nextY 下一步的X坐标
+     * @param board 棋盘
      * @return true为符合 false不符合
      */
-    public abstract boolean conformRules(Piece piece);
+    public abstract boolean verify(byte nextX, byte nextY, Board board);
 
+    /**
+     * 移动棋子
+     * 先判断是否符合行子规则 若符合则进行移动 否则抛出错误
+     * 再判断落点是否存在敌方棋子  若存在则将敌方棋子的状态改为死亡
+     *
+     * @param nextX 下一步的X坐标
+     * @param nextY 下一步的X坐标
+     * @param board 棋盘
+     */
+    public void move(byte nextX, byte nextY, Board board) {
+        //
+        boolean verifyResult = verify(nextX, nextY, board);
+        if (verifyResult) {
+            this.x = nextX;
+            this.y = nextY;
+            Piece piece = board.getPieceByCoordinate(nextX, nextY);
+            //只要存在棋子 必定是敌方棋子 否则验证行子规则时会失败
+            if (piece != null) {
+                piece.setDead(false);
+            }
+        }
+    }
 
 }
