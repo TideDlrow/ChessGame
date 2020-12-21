@@ -11,21 +11,21 @@ public abstract class Piece {
     /**
      * 坐标x值
      */
-    private byte x;
+    protected byte x;
     /**
      * 坐标y值
      */
-    private byte y;
+    protected byte y;
     /**
      * 所属阵营
      * false 黑方
      * true 红方
      */
-    private boolean camp;
+    protected boolean camp;
     /**
      * 是否死亡
      */
-    private boolean dead;
+    protected boolean dead;
 
 //    private final int WEIGHT;
 

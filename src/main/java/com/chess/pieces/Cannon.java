@@ -3,7 +3,7 @@ package com.chess.pieces;
 import com.chess.bean.Board;
 
 /**
- * aop
+ * 炮
  */
 public class Cannon extends Piece{
     @Override
