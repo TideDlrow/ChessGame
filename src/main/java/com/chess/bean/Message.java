@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Message {
     private boolean success;
-    private int code;
-    private String message;
+    private int code = 200;
+    private Object message;
 }

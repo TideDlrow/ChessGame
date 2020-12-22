@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chess.dao.PlayerDAO">
+    <sql id="player">player</sql>
+    <!-- id属性填写Dao文件里的函数名称 xxType是参数或是结果的类型根据情况填写 -->
+    <!-- 查询所有   -->
+    <select id="getAll" resultType="com.chess.bean.Player">
+        SELECT id,
+               userName,
+               password
+        FROM player
+    </select>
+
+    <select id="getPlayerById" resultType="com.chess.bean.Player">
+        select id, userName, password
+        from player
+        where id = #{id}
+    </select>
+
+    <select id="getPlayerByName" resultType="com.chess.bean.Player">
+        select id, userName, password
+        from player
+        where userName = #{userName}
+    </select>
+
+    <insert id="addPlayer" parameterType="com.chess.bean.Player">
+        insert into player (userName, password)
+        values (#{userName}, #{password})
+    </insert>
+
+    <select id="verifyPassword" parameterType="com.chess.bean.Player">
+        select count(1)
+        from player
+        where userName = #{userName}
+          and password = #{password}
+    </select>
+
+    <select id="getPlayerNameNum" resultType="int">
+        select count(1)
+        from player
+        where userName = #{userName}
+    </select>
+
+    <update id="setActiveUUID">
+        update player
+        set activeUUID = #{activeUUID}
+        where id = #{id}
+    </update>
+</mapper>

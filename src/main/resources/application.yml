@@ -1,1 +1,16 @@
-server.port=8080
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/chessGame?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=UTC
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8818
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+bussiness:
+  jwtSecret: "liu_yi_cheng"
+  //有效时间 毫秒
+  validTime: 10 * 60 *1000
