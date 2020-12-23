@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -71,9 +68,14 @@ public class PlayersController {
         String activeUUID = IdUtil.simpleUUID();
         playerService.setActiveUUID(Integer.parseInt(player.getId()), activeUUID);
         String token = JWT.create()
+                //受众(好像没什么意义)
                 .withAudience(player.getId())
-                .withAudience(String.valueOf(expirationTime))
-                .withAudience(activeUUID)
+                //过期时间
+                .withExpiresAt(new Date(expirationTime))
+                //自定义属性
+                .withClaim("id",player.getId())
+                .withClaim("activeUUID",activeUUID)
+                //签名
                 .sign(Algorithm.HMAC256(businessConfig.getJwtSecret()));
         Message message = new Message();
         message.setMessage(token);
@@ -93,7 +95,7 @@ public class PlayersController {
 
     @RequestMapping("/refreshToken")
     public Message refreshToken(HttpServletRequest request) throws BusinessException {
-        //从请求头中去除token
+        //从请求头中去取token
         String token = request.getHeader("token");
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(businessConfig.getJwtSecret())).build();
         DecodedJWT decodedJWT;
@@ -102,15 +104,17 @@ public class PlayersController {
         } catch (JWTVerificationException e) {
             throw new BusinessException(BusinessError.TOKEN_INVALID);
         }
-        List<String> audience = decodedJWT.getAudience();
-        String userId = audience.get(0);
+        String userId = decodedJWT.getClaim("id").asString();
         Player player = playerService.getPlayerById(Integer.parseInt(userId));
         long expirationTime = System.currentTimeMillis() + businessConfig.getValidTime();
         //仅修改过期时间
         token = JWT.create()
                 .withAudience(player.getId())
-                .withAudience(String.valueOf(expirationTime))
-                .withAudience(player.getActiveUUID())
+                //过期时间
+                .withExpiresAt(new Date(expirationTime))
+                //自定义属性
+                .withClaim("id",player.getId())
+                .withClaim("activeUUID",player.getActiveUUID())
                 .sign(Algorithm.HMAC256(businessConfig.getJwtSecret()));
         Message message = new Message();
         message.setMessage(token);

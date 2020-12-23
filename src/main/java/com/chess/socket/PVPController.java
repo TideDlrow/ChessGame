@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint("/socket/{userId}")
 @Controller
-public class PlayerController {
+public class PVPController {
     private final Map<String, Session> userSessions = new ConcurrentHashMap<>();
 
     @OnOpen

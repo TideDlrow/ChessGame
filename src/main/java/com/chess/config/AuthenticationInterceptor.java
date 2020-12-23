@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.chess.bean.Player;
 import com.chess.exception.BusinessError;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AuthenticationInterceptor implements HandlerInterceptor {
@@ -36,12 +38,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
-        //检查是否有passtoken注释，有则跳过认证
+        //检查是否有passToken注释，有则跳过认证
         if (method.isAnnotationPresent(PassToken.class)) {
             PassToken passToken = method.getAnnotation(PassToken.class);
-            if (passToken.required()) {
-                return true;
-            } else {
+            if (!passToken.required()) {
                 if (token == null) {
                     throw new BusinessException(BusinessError.NO_TOKEN);
                 }
@@ -52,23 +52,21 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 } catch (JWTVerificationException e) {
                     throw new BusinessException(BusinessError.TOKEN_INVALID);
                 }
-                List<String> audience = decodedJWT.getAudience();
-                String userId = audience.get(0);
-                String expirationTime = audience.get(1);
-                String activeUUID = audience.get(2);
-//                String userId = JWT.decode(token).getAudience().get(0);
-//                String expirationTime = JWT.decode(token).getAudience().get(1);
+                Map<String, Claim> claims = decodedJWT.getClaims();
+                String userId = claims.get("id").asString();
+                long expirationTime = decodedJWT.getExpiresAt().getTime();
+                String activeUUID = claims.get("activeUUID").asString();
                 long currentTime = System.currentTimeMillis();
                 //查看token是否过期
-                if (currentTime > Long.parseLong(expirationTime)) {
+                if (currentTime > expirationTime) {
                     throw new BusinessException(BusinessError.TOKEN_EXPIRATION);
                 }
                 Player player = playerService.getPlayerById(Integer.parseInt(userId));
-                if (!player.getActiveUUID().equals(activeUUID)){
+                if (!player.getActiveUUID().equals(activeUUID)) {
                     throw new BusinessException(BusinessError.MULTI_LOGIN);
                 }
-                return true;
             }
+            return true;
         }
         return false;
     }
