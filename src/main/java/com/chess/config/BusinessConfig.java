@@ -3,7 +3,7 @@ package com.chess.config;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("businessConfig")
 @Data
 public class BusinessConfig {
 

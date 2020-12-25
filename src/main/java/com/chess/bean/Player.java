@@ -12,6 +12,10 @@ public class Player {
     private String password;
     private String activeUUID;
     private PlayerStatus status = PlayerStatus.LOGIN;
+    /**
+     * 玩家阵营，true代表黑方，false代表红方
+     */
+    private boolean camp;
 
     public Player() {
     }

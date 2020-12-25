@@ -10,7 +10,11 @@ public enum BusinessError {
     NO_TOKEN(404,"未携带token"),
     TOKEN_EXPIRATION(405,"token已过期，请重新登录"),
     TOKEN_INVALID(406,"token无效"),
-    MULTI_LOGIN(407,"已在别处登录");
+    MULTI_LOGIN(407,"已在别处登录"),
+
+    NO_PIECE(501,"该位置不存在棋子"),
+    INVALID_MOVE(502,"非法移动"),
+    NO_PERMISSION(503,"不能移动对方棋子");
 
     private final int code;
     private final String message;

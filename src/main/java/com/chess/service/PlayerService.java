@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service("playerService")
 public class PlayerService {
     @Autowired
     PlayerDAO playerDAO;
