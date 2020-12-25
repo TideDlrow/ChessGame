@@ -24,9 +24,12 @@
         where userName = #{userName}
     </select>
 
-    <insert id="addPlayer" parameterType="com.chess.bean.Player">
+    <insert id="addPlayer" parameterType="com.chess.bean.Player" >
         insert into player (userName, password)
         values (#{userName}, #{password})
+        <selectKey resultType="com.chess.bean.Player">
+            select id,userName,password
+        </selectKey>
     </insert>
 
     <select id="verifyPassword" parameterType="com.chess.bean.Player">

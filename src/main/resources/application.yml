@@ -10,7 +10,7 @@ server:
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 
-bussiness:
+business:
   jwtSecret: "liu_yi_cheng"
-  //有效时间 毫秒
-  validTime: 10 * 60 *1000
+  #有效时间 毫秒
+  validtime: 10 * 60 *1000

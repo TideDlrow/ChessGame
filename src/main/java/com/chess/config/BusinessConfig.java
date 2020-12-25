@@ -1,13 +1,13 @@
 package com.chess.config;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
-@ConfigurationProperties(prefix = "jwt")
+@Component
 @Data
 public class BusinessConfig {
-    private long validTime;
-    private String jwtSecret;
+
+    private final long validTime = 10*60*1000;
+    private String jwtSecret = "liu_yi_cheng";
+
 }
