@@ -38,9 +38,9 @@ public class Board {
      */
     private boolean playerCamp;
     /**
-     * 当前能移动的玩家
+     * 当前能移动的玩家,默认红方先手
      */
-    private boolean currentCamp;
+    private boolean currentCamp = false;
 
     public Board(boolean camp) {
         this.playerCamp = camp;
@@ -211,8 +211,9 @@ public class Board {
      * @param y1 初始坐标
      * @param x2 目的坐标
      * @param y2 目的坐标
+     * @return 棋局是否结束  false未结束，true结束
      */
-    public void movePiece(int x1, int y1, int x2, int y2) throws BusinessException {
+    public boolean movePiece(int x1, int y1, int x2, int y2) throws BusinessException {
         Piece piece = getPieceByCoordinate(x1, y1);
         if (piece == null) {
             throw new BusinessException(BusinessError.NO_PIECE);
@@ -225,5 +226,14 @@ public class Board {
         setPiece(x1, y1, null);
         piece.setX(x2);
         piece.setY(y2);
+        //检测将或帅是否死亡
+        Piece targetPiece = getPieceByCoordinate(x2,y2);
+        if (targetPiece instanceof King){
+            return true;
+        }
+        //棋子移动后翻转下棋方
+        currentCamp = !piece.isCamp();
+        return false;
     }
+
 }
