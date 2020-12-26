@@ -26,6 +26,8 @@ public class King extends Piece {
 
         }
         return
+                //当与另一个将/帅成直线且中间没有其他棋子时，可以移动
+                (board.isStraightLine(nextX, nextY, anotherKingX, anotherKingY) && board.getPieceNum(nextX, nextY, anotherKingX, anotherKingY) == 0)||
                 //没有超过规定范围
                 isEffectiveRange(nextX, nextY, board.isPlayerCamp()) &&
                 //仅走了一步

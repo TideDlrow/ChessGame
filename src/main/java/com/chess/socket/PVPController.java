@@ -13,8 +13,6 @@ import com.chess.service.PlayerService;
 import com.chess.utils.ApplicationContextUtil;
 import com.chess.utils.TokenUtil;
 import lombok.Data;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +20,6 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -121,11 +118,29 @@ public class PVPController {
             }
             //如果棋局结束,则直接发送输赢信息
             if (result) {
-                sendMessage(userId, "{finished:true,isWin:true}");
-                sendMessage(anotherUserId, "{finished:true,isWin:false}");
+                //stage:finished表示棋局结束阶段
+                sendMessage(userId, "{stage:'finished',finished:true,isWin:true}");
+                sendMessage(anotherUserId, "{stage:'finished',finished:true,isWin:false}");
+                //把棋盘从容器中移除
+                BOARDS_KEYS.remove(userId);
+                BOARDS_KEYS.remove(anotherUserId);
+                BOARDS.remove(boardKey);
+                //从容器中移除用户
+                ALL_PVP_PLAYERS.remove(userId);
+                ALL_PVP_PLAYERS.remove(anotherUserId);
+                //主动断开两个用户的连接
+                try {
+                    CloseReason closeReason = new CloseReason(CloseReason.CloseCodes.GOING_AWAY, "对局结束！！");
+                    PLAYER_SESSIONS.get(userId).close(closeReason);
+                    PLAYER_SESSIONS.get(anotherUserId).close(closeReason);
+                    PLAYER_SESSIONS.remove(userId);
+                    PLAYER_SESSIONS.remove(anotherUserId);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
                 //棋局未结束 向另一个玩家发送棋子移动的消息
-                sendMessage(anotherUserId, "{step:" + step + "}");
+                sendMessage(anotherUserId, "{stage:'move',step:'" + step + "'}");
             }
         } else {
             throw new BusinessException(BusinessError.NO_PERMISSION);
@@ -197,14 +212,14 @@ public class PVPController {
                 //把玩家从待匹配列表移除
                 MATCHED_PLAYER.remove(userId1);
                 MATCHED_PLAYER.remove(userId2);
-                //将分配结果发给前端
-                sendMessage(userId1, "{camp:true,matchFlag:true}");
-                sendMessage(userId2, "{camp:false,matchFlag:true}");
+                //将分配结果发给前端。stage表示当前阶段 distribution表示分配阶段
+                sendMessage(userId1, "{stage:'distribution',camp:true,matchFlag:true}");
+                sendMessage(userId2, "{stage:'distribution',camp:false,matchFlag:true}");
             }
         }
         //如果匹配次数超过一定次数，则移出匹配
         for (String userId : MATCHED_PLAYER.keySet()) {
-            System.out.println("----");
+//            System.out.println("----");
             Integer times = MATCHED_TIMES.get(userId);
             //超过10次,发送匹配失败的信息，移出匹配列表
             if (times >= 10) {
