@@ -14,12 +14,12 @@ public class King extends Piece {
     public boolean verify(int nextX, int nextY, Board board) {
         Piece targetPiece = board.getPieceByCoordinate(nextX, nextY);
         int anotherKingX = -1, anotherKingY = -1;
-        for (int i = 1; i <= board.getROW_NUM(); i++) {
+        for (int i = 1; i <= board.getCOL_NUM(); i++) {
             for (int j = 1; j <= board.getROW_NUM(); j++) {
                 Piece piece = board.getPieceByCoordinate(i, j);
                 if (piece instanceof King && piece.isCamp() != camp) {
-                    anotherKingX = j;
-                    anotherKingY = i;
+                    anotherKingX = i;
+                    anotherKingY = j;
                     break;
                 }
             }
@@ -27,15 +27,15 @@ public class King extends Piece {
         }
         return
                 //当与另一个将/帅成直线且中间没有其他棋子时，可以移动
-                (board.isStraightLine(nextX, nextY, anotherKingX, anotherKingY) && board.getPieceNum(nextX, nextY, anotherKingX, anotherKingY) == 0)||
-                //没有超过规定范围
-                isEffectiveRange(nextX, nextY, board.isPlayerCamp()) &&
-                //仅走了一步
-                board.isOneStep(x, y, nextX, nextY) &&
-                //目标位置和另一个将/帅之间不是直线，或者是直线且中间有其他棋子
-                (!board.isStraightLine(nextX, nextY, anotherKingX, anotherKingY) || board.getPieceNum(nextX, nextY, anotherKingX, anotherKingY) > 0) &&
-                //目标位置没有棋子，或为敌方棋子
-                (targetPiece == null || targetPiece.isCamp() != camp);
+                (board.isStraightLine(nextX, nextY, anotherKingX, anotherKingY) && board.getPieceNum(nextX, nextY, anotherKingX, anotherKingY) == 0) ||
+                        //没有超过规定范围
+                        (isEffectiveRange(nextX, nextY, board.isPlayerCamp()) &&
+                                //仅走了一步
+                                board.isOneStep(x, y, nextX, nextY) &&
+                                //目标位置和另一个将/帅之间不是直线，或者是直线且中间有其他棋子
+                                (!board.isStraightLine(nextX, nextY, anotherKingX, anotherKingY) || board.getPieceNum(nextX, nextY, anotherKingX, anotherKingY) > 0) &&
+                                //目标位置没有棋子，或为敌方棋子
+                                (targetPiece == null || targetPiece.isCamp() != camp));
     }
 
     public boolean isEffectiveRange(int x, int y, boolean playerCamp) {

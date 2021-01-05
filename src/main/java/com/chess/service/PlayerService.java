@@ -28,7 +28,7 @@ public class PlayerService {
         playerDAO.delete(id);
     }
 
-    public Player addPlayer(Player player){
+    public int addPlayer(Player player){
          return playerDAO.addPlayer(player);
     }
 

@@ -18,7 +18,7 @@ public interface PlayerDAO {
 
     void delete(int id);
 
-    Player addPlayer(Player player);
+    int addPlayer(Player player);
 
     int verifyPassword(Player player);
 

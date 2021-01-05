@@ -15,12 +15,6 @@ import java.util.Map;
 @Data
 public class Board {
     /**
-     * 棋子的排列
-     * key -->  棋子的xy坐标组合而成的字符串 第一个是x坐标  第二个是y坐标 如 “10,5”表示x坐标是10 y坐标是5
-     * value --> 棋子对象
-     */
-//    private Map<String, Piece> currentBoard = new HashMap<>();
-    /**
      * 列数
      */
     private final int COL_NUM = 9;
@@ -31,6 +25,7 @@ public class Board {
 
     /**
      * 棋盘中棋子的排列
+     * 左上角的车坐标为1,1  马为2,1 象为3,1 ……
      */
     private Piece[][] board = new Piece[ROW_NUM][COL_NUM];
     /**
@@ -56,42 +51,42 @@ public class Board {
         boolean anotherCamp = !camp;
         //上方的棋子
         setPiece(1, 1, new Rook(1, 1, anotherCamp));
-        setPiece(1, 2, new Knight(1, 2, anotherCamp));
-        setPiece(1, 3, new Bishop(1, 3, anotherCamp));
-        setPiece(1, 4, new Assistants(1, 4, anotherCamp));
-        setPiece(1, 5, new King(1, 5, anotherCamp));
-        setPiece(1, 6, new Assistants(1, 6, anotherCamp));
-        setPiece(1, 7, new Bishop(1, 7, anotherCamp));
-        setPiece(1, 8, new Knight(1, 8, anotherCamp));
-        setPiece(1, 9, new Rook(1, 9, anotherCamp));
+        setPiece(2, 1, new Knight(2, 1, anotherCamp));
+        setPiece(3, 1, new Bishop(3, 1, anotherCamp));
+        setPiece(4, 1, new Assistants(4, 1, anotherCamp));
+        setPiece(5, 1, new King(5, 1, anotherCamp));
+        setPiece(6, 1, new Assistants(6, 1, anotherCamp));
+        setPiece(7, 1, new Bishop(7, 1, anotherCamp));
+        setPiece(8, 1, new Knight(8, 1, anotherCamp));
+        setPiece(9, 1, new Rook(9, 1, anotherCamp));
 
-        setPiece(3, 2, new Cannon(3, 2, anotherCamp));
-        setPiece(3, 8, new Cannon(3, 8, anotherCamp));
+        setPiece(2, 3, new Cannon(2, 3, anotherCamp));
+        setPiece(8, 3, new Cannon(8, 3, anotherCamp));
 
-        setPiece(4, 1, new Pawn(5, 1, anotherCamp));
-        setPiece(4, 3, new Pawn(5, 3, anotherCamp));
-        setPiece(4, 5, new Pawn(5, 5, anotherCamp));
-        setPiece(4, 7, new Pawn(5, 7, anotherCamp));
-        setPiece(4, 9, new Pawn(5, 9, anotherCamp));
+        setPiece(1, 4, new Pawn(1, 4, anotherCamp));
+        setPiece(3, 4, new Pawn(3, 4, anotherCamp));
+        setPiece(5, 4, new Pawn(5, 4, anotherCamp));
+        setPiece(7, 4, new Pawn(7, 4, anotherCamp));
+        setPiece(9, 4, new Pawn(9, 4, anotherCamp));
         //下方的棋子
-        setPiece(7, 1, new Pawn(7, 1, camp));
-        setPiece(7, 3, new Pawn(7, 3, camp));
-        setPiece(7, 5, new Pawn(7, 5, camp));
+        setPiece(1, 7, new Pawn(1, 7, camp));
+        setPiece(3, 7, new Pawn(3, 7, camp));
+        setPiece(5, 7, new Pawn(5, 7, camp));
         setPiece(7, 7, new Pawn(7, 7, camp));
-        setPiece(7, 9, new Pawn(7, 9, camp));
+        setPiece(9, 7, new Pawn(9, 7, camp));
 
-        setPiece(8, 2, new Cannon(8, 2, camp));
+        setPiece(2, 8, new Cannon(2, 8, camp));
         setPiece(8, 8, new Cannon(8, 8, camp));
 
-        setPiece(10, 1, new Rook(10, 1, camp));
-        setPiece(10, 2, new Knight(10, 2, camp));
-        setPiece(10, 3, new Bishop(10, 3, camp));
-        setPiece(10, 4, new Assistants(10, 4, camp));
-        setPiece(10, 5, new King(10, 5, camp));
-        setPiece(10, 6, new Assistants(10, 6, camp));
-        setPiece(10, 7, new Bishop(10, 7, camp));
-        setPiece(10, 8, new Knight(10, 8, camp));
-        setPiece(10, 9, new Rook(10, 9, camp));
+        setPiece(1, 10, new Rook(1, 10, camp));
+        setPiece(2, 10, new Knight(2, 10, camp));
+        setPiece(3, 10, new Bishop(3, 10, camp));
+        setPiece(4, 10, new Assistants(4, 10, camp));
+        setPiece(5, 10, new King(5, 10, camp));
+        setPiece(6, 10, new Assistants(6, 10, camp));
+        setPiece(7, 10, new Bishop(7, 10, camp));
+        setPiece(8, 10, new Knight(8, 10, camp));
+        setPiece(9, 10, new Rook(9, 10, camp));
     }
 
     public void setPiece(int x, int y, Piece piece) {
@@ -107,7 +102,7 @@ public class Board {
      */
     public Piece getPieceByCoordinate(int x, int y) {
 //        return currentBoard.get(x + "," + y);
-        if ((x < 1 || y < 1) && (x > COL_NUM || y > ROW_NUM)) {
+        if ((x < 1 || y < 1) || (x > COL_NUM || y > ROW_NUM)) {
             //坐标异常
             return null;
         }
@@ -172,31 +167,32 @@ public class Board {
 
     /**
      * 获取从x1,y1到x2,y2的棋子数量。不包括这两个点
+     *
      * @param x1
      * @param y1
      * @param x2
      * @param y2
      * @return -1表示这两个点不是直线，>=0则是棋子数量
      */
-    public int getPieceNum(int x1,int y1,int x2,int y2){
-        if (!isStraightLine(x1,y1,x2,y2)){
+    public int getPieceNum(int x1, int y1, int x2, int y2) {
+        if (!isStraightLine(x1, y1, x2, y2)) {
             return -1;
         }
         int count = 0;
         //列
-        if (x1==x2){
+        if (x1 == x2) {
             int begin = Math.min(y1, y2);
-            int end = Math.max(y1,y2);
-            for (int i = begin; i < end-1; i++) {
-                if (getPieceByCoordinate(x1,i) != null){
+            int end = Math.max(y1, y2);
+            for (int i = begin + 1; i < end; i++) {
+                if (getPieceByCoordinate(x1, i) != null) {
                     count++;
                 }
             }
-        }else {
+        } else {
             int begin = Math.min(x1, x2);
-            int end = Math.max(x1,x2);
-            for (int i = begin; i < end-1; i++) {
-                if (getPieceByCoordinate(x1,i) != null){
+            int end = Math.max(x1, x2);
+            for (int i = begin + 1; i < end; i++) {
+                if (getPieceByCoordinate(i, y1) != null) {
                     count++;
                 }
             }
@@ -221,16 +217,16 @@ public class Board {
         if (!piece.verify(x2, y2, this)) {
             throw new BusinessException(BusinessError.INVALID_MOVE);
         }
-        //把棋子挪到指定位置，原先位置置空
+        //如果棋子移动到指定位置，检测将或帅是否死亡
+        Piece targetPiece = getPieceByCoordinate(x2, y2);
+        if (targetPiece instanceof King) {
+            return true;
+        }
+        //将/帅未死亡，棋局未结束。把棋子挪到指定位置，原先位置置空
         setPiece(x2, y2, piece);
         setPiece(x1, y1, null);
         piece.setX(x2);
         piece.setY(y2);
-        //检测将或帅是否死亡
-        Piece targetPiece = getPieceByCoordinate(x2,y2);
-        if (targetPiece instanceof King){
-            return true;
-        }
         //棋子移动后翻转下棋方
         currentCamp = !piece.isCamp();
         return false;

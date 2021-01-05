@@ -40,7 +40,7 @@ public class PlayersController {
     public Message login(String username, String password) throws BusinessException {
         Player player = playerService.getPlayerByName(username);
         //验证用户名及密码
-        if (!player.getPassword().equals(SecureUtil.sha1(password))) {
+        if (player == null || !player.getPassword().equals(SecureUtil.sha1(password))) {
             throw new BusinessException(BusinessError.LOGIN_ERROR);
         }
         return generateToken(player);
@@ -56,9 +56,8 @@ public class PlayersController {
         Player player = new Player();
         player.setUserName(username);
         player.setPassword(SecureUtil.sha1(password));
-        player = playerService.addPlayer(player);
-        //token
-        //过期时间
+        int playerId = playerService.addPlayer(player);
+        player.setId(playerId + "");
         return generateToken(player);
     }
 
@@ -73,8 +72,8 @@ public class PlayersController {
                 //过期时间
                 .withExpiresAt(new Date(expirationTime))
                 //自定义属性
-                .withClaim("id",player.getId())
-                .withClaim("activeUUID",activeUUID)
+                .withClaim("id", player.getId())
+                .withClaim("activeUUID", activeUUID)
                 //签名
                 .sign(Algorithm.HMAC256(businessConfig.getJwtSecret()));
         Message message = new Message();
@@ -113,8 +112,8 @@ public class PlayersController {
                 //过期时间
                 .withExpiresAt(new Date(expirationTime))
                 //自定义属性
-                .withClaim("id",player.getId())
-                .withClaim("activeUUID",player.getActiveUUID())
+                .withClaim("id", player.getId())
+                .withClaim("activeUUID", player.getActiveUUID())
                 .sign(Algorithm.HMAC256(businessConfig.getJwtSecret()));
         Message message = new Message();
         message.setMessage(token);

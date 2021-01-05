@@ -33,10 +33,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             PassToken passToken = method.getAnnotation(PassToken.class);
             if (passToken.required()) {
                 return true;
-            } else {
-                return TokenUtil.verifyToken(token, businessConfig.getJwtSecret(), playerService);
             }
         }
-        return false;
+        return TokenUtil.verifyToken(token, businessConfig.getJwtSecret(), playerService);
     }
 }

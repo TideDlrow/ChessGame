@@ -13,7 +13,7 @@
     </select>
 
     <select id="getPlayerById" resultType="com.chess.bean.Player">
-        select id, userName, password
+        select id, userName, password,activeUUID
         from player
         where id = #{id}
     </select>
@@ -24,12 +24,12 @@
         where userName = #{userName}
     </select>
 
-    <insert id="addPlayer" parameterType="com.chess.bean.Player" >
+    <insert id="addPlayer" parameterType="com.chess.bean.Player" useGeneratedKeys="true" keyProperty="id" >
         insert into player (userName, password)
         values (#{userName}, #{password})
-        <selectKey resultType="com.chess.bean.Player">
+        <!--<selectKey resultType="com.chess.bean.Player">
             select id,userName,password
-        </selectKey>
+        </selectKey>-->
     </insert>
 
     <select id="verifyPassword" parameterType="com.chess.bean.Player">
